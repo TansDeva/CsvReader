@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">CSVReader</string>
+
+    <string-array name="list_type">
+        <item>Album</item>
+        <item>Artist</item>
+    </string-array>
+
+    <string-array name="list_count">
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+        <item>25</item>
+    </string-array>
+</resources>
