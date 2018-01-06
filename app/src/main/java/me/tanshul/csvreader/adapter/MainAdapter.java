@@ -4,16 +4,12 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import me.tanshul.csvreader.R;
-import me.tanshul.csvreader.model.DataItem;
+import me.tanshul.csvreader.databinding.MainDataBinding;
+import me.tanshul.viewmodel.DataItem;
 
 /**
  * Created by tansdeva on 28/12/17.
@@ -21,6 +17,7 @@ import me.tanshul.csvreader.model.DataItem;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
     private Context mContext;
+    private LayoutInflater mInflater;
     private ArrayList<DataItem> mItemList;
 
     public MainAdapter(Context context, ArrayList<DataItem> itemList) {
@@ -30,17 +27,20 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
 
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.cell_list_item, parent, false);
-        return new MainViewHolder(view);
+        if (mInflater == null) {
+            mInflater = LayoutInflater.from(mContext);
+        }
+        MainDataBinding binding = MainDataBinding.inflate(mInflater, parent, false);
+        return new MainViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(MainViewHolder holder, final int position) {
         DataItem item = mItemList.get(position);
-        holder.tvItemTitle.setText(item.getTitle());
         DataAdapter adapter = new DataAdapter(mContext, item.getItems());
-        holder.rvItemData.setLayoutManager(new LinearLayoutManager(mContext));
-        holder.rvItemData.setAdapter(adapter);
+        holder.mBinding.rvItemData.setLayoutManager(new LinearLayoutManager(mContext));
+        holder.mBinding.rvItemData.setAdapter(adapter);
+        holder.bind(item);
     }
 
     @Override
@@ -49,14 +49,15 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     }
 
     public class MainViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.tv_item_title)
-        TextView tvItemTitle;
-        @BindView(R.id.rv_item_data)
-        RecyclerView rvItemData;
+        private MainDataBinding mBinding;
 
-        MainViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        MainViewHolder(MainDataBinding binding) {
+            super(binding.getRoot());
+            this.mBinding = binding;
+        }
+
+        public void bind(DataItem item) {
+            this.mBinding.setData(item);
         }
     }
 }

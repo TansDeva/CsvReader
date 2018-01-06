@@ -1,4 +1,4 @@
-package me.tanshul.csvreader.model;
+package me.tanshul.viewmodel;
 
 import java.util.List;
 

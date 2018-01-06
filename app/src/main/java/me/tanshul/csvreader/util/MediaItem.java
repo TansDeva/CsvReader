@@ -1,4 +1,4 @@
-package me.tanshul.csvreader.model;
+package me.tanshul.csvreader.util;
 
 /**
  * Created by tansdeva on 28/12/17.

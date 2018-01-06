@@ -1,14 +1,12 @@
 package me.tanshul.csvreader.activity;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,36 +17,27 @@ import java.util.List;
 import java.util.Map;
 
 import au.com.bytecode.opencsv.CSVReader;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import me.tanshul.csvreader.R;
 import me.tanshul.csvreader.adapter.MainAdapter;
-import me.tanshul.csvreader.model.DataItem;
-import me.tanshul.csvreader.model.MediaItem;
-import me.tanshul.csvreader.util.Utility;
+import me.tanshul.csvreader.databinding.MainActivityBinding;
+import me.tanshul.viewmodel.DataItem;
+import me.tanshul.csvreader.util.MediaItem;
+import me.tanshul.viewmodel.ItemType;
 
-public class MainActivity extends AppCompatActivity {
-    public int mCount = 2;
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    public ItemType mItemType;
     private Context mContext;
     private MainAdapter mAdapter;
+    private MainActivityBinding mBinding;
     private ArrayList<DataItem> mList = new ArrayList<>();
     private ArrayList<MediaItem> mItems = new ArrayList<>();
-    private String[] mListType = Utility.getStringArray(R.array.list_type);
-    private String[] mListCount = Utility.getStringArray(R.array.list_count);
-
-    //Declare all views here
-    @BindView(R.id.sp_item_type)
-    Spinner spItemType;
-    @BindView(R.id.sp_item_count)
-    Spinner spItemCount;
-    @BindView(R.id.rv_item_list)
-    RecyclerView rvItemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mItemType = new ItemType();
+        mBinding.setType(mItemType);
         mContext = this;
         getCsvContents();
         setListData();
@@ -56,46 +45,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void setListData() {
         mAdapter = new MainAdapter(mContext, mList);
-        rvItemList.setLayoutManager(new LinearLayoutManager(mContext));
-        rvItemList.setAdapter(mAdapter);
-        ArrayAdapter adapterType = new ArrayAdapter(mContext,
-                android.R.layout.simple_spinner_dropdown_item, mListType);
-        ArrayAdapter adapterCount = new ArrayAdapter(mContext,
-                android.R.layout.simple_spinner_dropdown_item, mListCount);
-        spItemType.setAdapter(adapterType);
-        spItemCount.setAdapter(adapterCount);
-        setListeners();
+        mBinding.rvItemList.setLayoutManager(new LinearLayoutManager(mContext));
+        mBinding.rvItemList.setAdapter(mAdapter);
+        mBinding.spItemType.setOnItemSelectedListener(this);
+        mBinding.spItemCount.setOnItemSelectedListener(this);
         getAlbumList();
-    }
-
-    private void setListeners() {
-        spItemType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0) {
-                    getAlbumList();
-                } else {
-                    getArtistList();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                //Do nothing
-            }
-        });
-        spItemCount.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mCount = Integer.parseInt(mListCount[i]);
-                mAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                //Do nothing
-            }
-        });
     }
 
     private void getCsvContents() {
@@ -151,5 +105,27 @@ public class MainActivity extends AppCompatActivity {
             mList.add(new DataItem(key, list.get(key)));
         }
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        switch (adapterView.getId()) {
+            case R.id.spItemType:
+                if (i == 0) {
+                    getAlbumList();
+                } else {
+                    getArtistList();
+                }
+                break;
+            case R.id.spItemCount:
+                /*mItemType.setCount(Integer.parseInt(mListCount[i]));
+                mAdapter.notifyDataSetChanged();*/
+                break;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        //Do nothing
     }
 }
