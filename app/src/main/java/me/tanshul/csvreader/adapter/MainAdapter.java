@@ -1,6 +1,7 @@
 package me.tanshul.csvreader.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +9,9 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import me.tanshul.csvreader.activity.MainActivity;
 import me.tanshul.csvreader.databinding.MainDataBinding;
+import me.tanshul.csvreader.util.Utility;
 import me.tanshul.viewmodel.DataItem;
 
 /**
@@ -17,12 +20,14 @@ import me.tanshul.viewmodel.DataItem;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
     private Context mContext;
+    private MainActivity mActivity;
     private LayoutInflater mInflater;
     private ArrayList<DataItem> mItemList;
 
     public MainAdapter(Context context, ArrayList<DataItem> itemList) {
         this.mContext = context;
         this.mItemList = itemList;
+        this.mActivity = (MainActivity) mContext;
     }
 
     @Override
@@ -38,7 +43,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     public void onBindViewHolder(MainViewHolder holder, final int position) {
         DataItem item = mItemList.get(position);
         DataAdapter adapter = new DataAdapter(mContext, item.getItems());
-        holder.mBinding.rvItemData.setLayoutManager(new LinearLayoutManager(mContext));
+        int size = Math.min(item.getItems().size(), mActivity.mItemType.getCount());
+        GridLayoutManager glManager = new GridLayoutManager(mContext,
+                size, GridLayoutManager.HORIZONTAL, false);
+        holder.mBinding.rvItemData.setLayoutManager(glManager);
+        holder.mBinding.rvItemData.setHasFixedSize(true);
         holder.mBinding.rvItemData.setAdapter(adapter);
         holder.bind(item);
     }

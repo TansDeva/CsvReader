@@ -11,7 +11,7 @@ import me.tanshul.csvreader.CsvReaderApp;
  */
 
 public class Utility {
-    public static final int DEFAULT_COUNT = 2;
+    public static final int DEFAULT_COUNT = 1;
     private static Context mContext = CsvReaderApp.getContext();
 
     public static String[] getStringArray(int resId) {

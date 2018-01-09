@@ -20,6 +20,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import me.tanshul.csvreader.R;
 import me.tanshul.csvreader.adapter.MainAdapter;
 import me.tanshul.csvreader.databinding.MainActivityBinding;
+import me.tanshul.csvreader.util.Utility;
 import me.tanshul.viewmodel.DataItem;
 import me.tanshul.csvreader.util.MediaItem;
 import me.tanshul.viewmodel.ItemType;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private MainActivityBinding mBinding;
     private ArrayList<DataItem> mList = new ArrayList<>();
     private ArrayList<MediaItem> mItems = new ArrayList<>();
+    private ArrayList<String> mListCount = Utility.getList(R.array.list_count);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         for (MediaItem item : mItems) {
             String name = item.getAlbum();
             List<DataItem.Data> data = new ArrayList<>();
-            DataItem.Data value = new DataItem.Data(item.getName(), item.getArtist());
+            DataItem.Data value = new DataItem.Data(item.getName());
             if (list.containsKey(name)) {
                 data.addAll(list.get(name));
             }
@@ -94,7 +96,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         for (MediaItem item : mItems) {
             String name = item.getArtist();
             List<DataItem.Data> data = new ArrayList<>();
-            DataItem.Data value = new DataItem.Data(item.getName(), item.getAlbum());
+            DataItem.Data value = new DataItem.Data(item.getName()
+            );
             if (list.containsKey(name)) {
                 data.addAll(list.get(name));
             }
@@ -118,8 +121,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 break;
             case R.id.spItemCount:
-                /*mItemType.setCount(Integer.parseInt(mListCount[i]));
-                mAdapter.notifyDataSetChanged();*/
+                mItemType.setCount(Integer.parseInt(mListCount.get(i)));
+                mAdapter.notifyDataSetChanged();
                 break;
         }
     }

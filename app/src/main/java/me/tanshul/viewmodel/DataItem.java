@@ -25,19 +25,13 @@ public class DataItem {
 
     public static class Data {
         private String name;
-        private String data;
 
-        public Data(String name, String data) {
+        public Data(String name) {
             this.name = name;
-            this.data = data;
         }
 
         public String getName() {
             return name;
-        }
-
-        public String getData() {
-            return data;
         }
     }
 }
